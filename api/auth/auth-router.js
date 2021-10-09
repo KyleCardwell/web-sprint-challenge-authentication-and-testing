@@ -4,9 +4,11 @@ const bcrypt = require('bcryptjs')
 
 const Users = require('../users/users-model')
 
-const { checkUserRegistered } = require('./auth-middleware')
+const { checkCredentials, checkUsernameAvailable, checkUserRegistered } = require('./auth-middleware')
 
-router.post('/register', (req, res, next) => {
+const tokenBuilder = require('../auth/token-builder')
+
+router.post('/register', checkCredentials, checkUsernameAvailable, (req, res, next) => {
   // res.end('implement register, please!');
   /*
     IMPLEMENT
@@ -34,7 +36,7 @@ router.post('/register', (req, res, next) => {
       the response body should include a string exactly as follows: "username taken".
   */
 
-  let user = req.body
+  const user = req.body
 
   const rounds = 8
   const hash = bcrypt.hashSync(user.password, rounds)
@@ -49,7 +51,7 @@ router.post('/register', (req, res, next) => {
   
 });
 
-router.post('/login', checkUserRegistered, (req, res) => {
+router.post('/login', checkCredentials, checkUserRegistered, (req, res) => {
   // res.end('implement login, please!');
   /*
     IMPLEMENT
@@ -75,9 +77,14 @@ router.post('/login', checkUserRegistered, (req, res) => {
       the response body should include a string exactly as follows: "invalid credentials".
   */
 
-  let { username, password } = req.body
+  const user = req.body
 
-  console.log(req.funny)
+  const token = tokenBuilder(user)
+
+  res.status(200).json({
+    message: `welcome, ${user.username}`,
+    token
+  })
 
 });
 
