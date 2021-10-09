@@ -51,7 +51,7 @@ router.post('/register', checkCredentials, checkUsernameAvailable, (req, res, ne
   
 });
 
-router.post('/login', checkCredentials, checkUserRegistered, (req, res) => {
+router.post('/login', checkCredentials, checkUserRegistered, (req, res, next) => {
   // res.end('implement login, please!');
   /*
     IMPLEMENT
@@ -81,10 +81,15 @@ router.post('/login', checkCredentials, checkUserRegistered, (req, res) => {
 
   const token = tokenBuilder(user)
 
-  res.status(200).json({
+  try {
+    res.status(200).json({
     message: `welcome, ${user.username}`,
     token
-  })
+    })
+  }
+  catch (err) {
+    next(err)
+  }
 
 });
 
