@@ -25,8 +25,8 @@ module.exports = (req, res, next) => {
         res.json({message: "token invalid"})
       } else {
         req.decodedToken = decodedToken
+        next()
       }
     })
   }
-  next();
 };
