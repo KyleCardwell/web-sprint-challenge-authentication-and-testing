@@ -82,7 +82,7 @@ router.post('/login', checkCredentials, checkUserRegistered, (req, res, next) =>
   const token = tokenBuilder(user)
 
   try {
-    res.status(201).json({
+    res.status(200).json({
     message: `welcome, ${user.username}`,
     token
     })
